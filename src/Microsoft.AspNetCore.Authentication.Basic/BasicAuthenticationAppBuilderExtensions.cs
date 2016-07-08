@@ -13,17 +13,14 @@ namespace Microsoft.AspNetCore.Builder
 {
     public static class BasicAuthenticationAppBuilderExtensions
     {
-		public static IApplicationBuilder UseBasicAuthentication(this IApplicationBuilder app) {
-			return app.UseMiddleware<BasicAuthenticationMiddleware>(new BasicAuthenticationOptions());
-		}
-		public static IApplicationBuilder UseBasicAuthentication(this IApplicationBuilder app, BasicAuthenticationOptions options) {
-			return app.UseMiddleware<BasicAuthenticationMiddleware>(options ?? new BasicAuthenticationOptions());
+		public static IApplicationBuilder UseBasicAuthentication(this IApplicationBuilder app, BasicAuthenticationOptions options = null) {
+			return app.UseMiddleware<BasicAuthenticationMiddleware>(Options.Create(options ?? new BasicAuthenticationOptions()));
 		}
         public static IApplicationBuilder UseBasicAuthentication(this IApplicationBuilder app, Action<BasicAuthenticationOptions> configure = null)
         {
 			var options = new BasicAuthenticationOptions();
-			if (configure != null) configure(options);
-			return app.UseMiddleware<BasicAuthenticationMiddleware>(options);
+			configure?.Invoke(options);
+            return UseBasicAuthentication(app, options);
 		}
 	}
 }

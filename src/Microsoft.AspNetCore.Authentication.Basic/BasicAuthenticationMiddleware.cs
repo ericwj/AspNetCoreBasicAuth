@@ -12,9 +12,9 @@ namespace Microsoft.AspNetCore.Authentication.Basic {
 	{
 		public BasicAuthenticationMiddleware(
 			RequestDelegate next,
-			IOptions<BasicAuthenticationOptions> options,
-			ILoggerFactory loggerFactory,
-			UrlEncoder encoder)
+            ILoggerFactory loggerFactory,
+            UrlEncoder encoder,
+            IOptions<BasicAuthenticationOptions> options)
 			: base(next, options, loggerFactory, encoder)
 		{
 			if (next == null) throw new ArgumentNullException(nameof(next));
