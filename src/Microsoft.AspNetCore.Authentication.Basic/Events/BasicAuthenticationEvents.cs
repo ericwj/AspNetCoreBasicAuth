@@ -7,14 +7,14 @@ namespace Microsoft.AspNetCore.Authentication.Basic.Events
 {
 	public class BasicAuthenticationEvents : IBasicAuthenticationEvents {
 
-		public Func<AuthenticationFailedContext, Task> OnAuthenticationFailed { get; set; } = context => Task.FromResult(0);
-		public Func<BasicChallengeContext, Task> OnChallenge { get; set; } = context => Task.FromResult(0);
-		public Func<CredentialReceivingContext, Task> OnCredentialReceiving { get; set; } = context => Task.FromResult(0);
-		public Func<CredentialReceivedContext, Task> OnCredentialReceived { get; set; } = context => Task.FromResult(0);
+		public Func<BasicAuthenticationEventContext, Task> OnAuthenticationFailed { get; set; } = context => Task.CompletedTask;
+		public Func<BasicAuthenticationEventContext, Task> OnChallenge { get; set; } = context => Task.CompletedTask;
+		public Func<BasicAuthenticationEventContext, Task> OnCredentialReceiving { get; set; } = context => Task.CompletedTask;
+		public Func<BasicAuthenticationEventContext, Task> OnCredentialReceived { get; set; } = context => Task.CompletedTask;
 
-		public Task AuthenticationFailed(AuthenticationFailedContext context) => OnAuthenticationFailed(context);
-		public Task Challenge(BasicChallengeContext context) => OnChallenge(context);
-		public Task CredentialReceiving(CredentialReceivingContext context) => OnCredentialReceiving(context);
-		public Task CredentialReceived(CredentialReceivedContext context) => OnCredentialReceived(context);
+		public Task AuthenticationFailed(BasicAuthenticationEventContext context) => OnAuthenticationFailed(context);
+		public Task Challenge(BasicAuthenticationEventContext context) => OnChallenge(context);
+		public Task CredentialReceiving(BasicAuthenticationEventContext context) => OnCredentialReceiving(context);
+		public Task CredentialReceived(BasicAuthenticationEventContext context) => OnCredentialReceived(context);
 	}
 }

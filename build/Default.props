@@ -1,0 +1,7 @@
+<Project ToolsVersion="15.0">
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<UserSecretsId>$(MSBuildProjectName)</UserSecretsId>
+		<ApplicationIcon Condition="Exists('wwwroot\favicon.ico')">wwwroot\favicon.ico</ApplicationIcon>
+	</PropertyGroup>
+</Project>

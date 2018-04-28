@@ -1,0 +1,9 @@
+{
+	"sdk": {
+		"comment": "see http://dot.net and 'dotnet --list-sdks'.",
+		"version-2.0-rtm": "2.1.4",
+		"version-2.1-preview1": "2.1.300-preview1-008174",
+		"version-2.1-preview2": "2.1.300-preview2-008530",
+		"version": "2.1.300-preview2-008530"
+	}
+}

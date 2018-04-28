@@ -1,0 +1,16 @@
+﻿<Project ToolsVersion="15.0">
+	<Import
+		Project="$(MSBuildThisFileDirectory)\build\Default.props"
+		Condition="Exists('$(MSBuildThisFileDirectory)\build\Default.props')"/>
+	<Import
+		Project="$(MSBuildThisFileDirectory)\build\AssemblyInfo.props"
+		Condition="Exists('$(MSBuildThisFileDirectory)\build\AssemblyInfo.props')"/>
+	<Import
+		Project="$(MSBuildThisFileDirectory)\build\Version.props"
+		Condition="Exists('$(MSBuildThisFileDirectory)\build\Version.props')"/>
+	
+	<PropertyGroup>
+		<!-- Harmless when building the solution, necessary when building one of the projects in it. -->
+		<SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+	</PropertyGroup>
+</Project>

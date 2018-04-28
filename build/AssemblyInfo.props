@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0">
+	<PropertyGroup>
+		<Product>Git Server</Product>
+		<Description>ASP.NET Core Git Server</Description>
+		<Copyright>Copyright © 2018 Eric Jonker</Copyright>
+		<Authors>Eric Jonker</Authors>
+		<PackageTags>Git Server ASP.NET Core</PackageTags>
+		<PackageReleaseNotes>Branch $(Build_SourceBranchName)@$(Build_SourceVersion)</PackageReleaseNotes>
+		<RepositoryUrl>https://git.ericjonker.com/Git.git</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+	</PropertyGroup>
+</Project>

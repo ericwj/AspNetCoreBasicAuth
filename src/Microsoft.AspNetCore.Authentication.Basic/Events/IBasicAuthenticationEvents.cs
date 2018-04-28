@@ -13,7 +13,7 @@ namespace Microsoft.AspNetCore.Authentication.Basic.Events
 		/// </summary>
 		/// <param name="context">The context for the current request.</param>
 		/// <returns>A task.</returns>
-		Task AuthenticationFailed(AuthenticationFailedContext context);
+		Task AuthenticationFailed(BasicAuthenticationEventContext context);
 		/// <summary>
 		/// Provides the handler of the event a chance to replace the basic authentication credentials
 		/// and to obtain them from another source than the standard Authorization header.
@@ -24,14 +24,14 @@ namespace Microsoft.AspNetCore.Authentication.Basic.Events
 		/// the normal parsing of the Authorization header does not take place.
 		/// </param>
 		/// <returns>A task.</returns>
-		Task CredentialReceiving(CredentialReceivingContext context);
+		Task CredentialReceiving(BasicAuthenticationEventContext context);
 		/// <summary>Occurs after the basic authentication credentials are obtained.</summary>
 		/// <param name="context">The context for the current request.</param>
 		/// <returns>A task.</returns>
-		Task CredentialReceived(CredentialReceivedContext context);
+		Task CredentialReceived(BasicAuthenticationEventContext context);
 		/// <summary>Occurs when an authentication challenge is requested by the application.</summary>
 		/// <param name="context">The context for the current request.</param>
 		/// <returns>A task.</returns>
-		Task Challenge(BasicChallengeContext context);
+		Task Challenge(BasicAuthenticationEventContext context);
     }
 }

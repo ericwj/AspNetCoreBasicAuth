@@ -10,90 +10,84 @@ using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Authentication.Basic.Events;
 using System.Security.Claims;
 using System.Net;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 
 namespace Microsoft.AspNetCore.Authentication.Basic {
 	public class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthenticationOptions> {
-		protected override async Task<AuthenticateResult> HandleAuthenticateAsync() {
-			BasicAuthenticationCredential credential = null;
-			try {
-				var receivingCtx = new CredentialReceivingContext(Context, Options);
-				await Options.Events.CredentialReceiving(receivingCtx);
-				if (receivingCtx.HandledResponse)
-					return AuthenticateResult.Success(receivingCtx.Ticket);
-				if (receivingCtx.Skipped)
-					return AuthenticateResult.Success(ticket: null);
 
-				credential = receivingCtx.Credential;
+		public BasicAuthenticationHandler(
+			IOptionsMonitor<BasicAuthenticationOptions> monitor,
+			ILoggerFactory logger,
+			UrlEncoder encoder,
+			ISystemClock clock)
+			: base(monitor, logger, encoder, clock) { }
+
+		protected new IBasicAuthenticationEvents Events {
+            get => (IBasicAuthenticationEvents)base.Events;
+            set => base.Events = value;
+        }
+
+        private async Task SetAuthenticateHeader(AuthenticationProperties properties)
+        {
+            var challenge = string.Format(BasicAuthentication.ChallengeFormat, Options.Realm);
+            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            Response.Headers.Add(BasicAuthentication.WwwAuthenticateHeader, challenge);
+            var context = new BasicAuthenticationEventContext(null, properties, Context, Scheme, Options);
+            await Options.Events.Challenge(context);
+        }
+
+        protected override Task<object> CreateEventsAsync() => Task.FromResult<object>(new BasicAuthenticationEvents());
+
+        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+            => SetAuthenticateHeader(properties);
+
+        protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
+        {
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return Task.CompletedTask;
+        }
+
+        protected override async Task<AuthenticateResult> HandleAuthenticateAsync() {
+			BasicAuthenticationCredential credential = null;
+            var principal = new ClaimsPrincipal();
+            var properties = new AuthenticationProperties();
+            try
+            {
+				var gotcred = new BasicAuthenticationEventContext(principal, properties, Context, Scheme, Options);
+				await Options.Events.CredentialReceiving(gotcred);
+
+				credential = gotcred.Credential;
 				if (credential == null) {
-					IEnumerable<string> valid = null;
-					if (!Request.Headers.TryGetAuthorizationHeaderValues(out valid))
+                    if (!Request.Headers.TryGetAuthorizationHeaderValues(out var valid))
+                        return AuthenticateResult.Fail("No authorization header.");
+                    if (!valid.Any())
 						return AuthenticateResult.Fail("No authorization header.");
-					if (!valid.Any())
-						return AuthenticateResult.Fail("No basic authorization header.");
-					Exception firstError;
-					if (!valid.TryParseHeaderCredentials(out credential, out firstError))
-						return AuthenticateResult.Fail(firstError);
-				}
+                    if (!valid.TryParseHeaderCredentials(out credential, out var firstError))
+                        return AuthenticateResult.Fail(firstError);
+                }
+                gotcred.Credential = credential;
 
 				var issuer = Options.ClaimsIssuer ?? Options.Realm;
-				var scheme = Options.AuthenticationScheme;
-				var receivedCtx = new CredentialReceivedContext(Context, Options, credential) {
-					Ticket = new AuthenticationTicket(
-						principal: BasicAuthentication.CreateClaimsPrincipal(credential, issuer, scheme),
-						properties: new AuthenticationProperties(),
-						authenticationScheme: Options.AuthenticationScheme)
-				};
-				await Options.Events.CredentialReceived(receivedCtx);
-				if (receivedCtx.HandledResponse)
-					return AuthenticateResult.Success(receivedCtx.Ticket);
-				if (receivedCtx.Skipped)
-					return AuthenticateResult.Success(ticket: null);
+                var ticket = new AuthenticationTicket(
+                    principal: BasicAuthentication.CreateClaimsPrincipal(credential, issuer, Scheme.Name),
+                    properties: properties,
+                    authenticationScheme: Scheme.Name);
+				await Options.Events.CredentialReceived(gotcred);
+				if (gotcred.Result.Succeeded)
+					return AuthenticateResult.Success(gotcred.Result.Ticket);
 
-				return AuthenticateResult.Success(receivedCtx.Ticket);
+				return AuthenticateResult.Success(ticket);
 			} catch (Exception ex) {
-				var failedCtx = new AuthenticationFailedContext(Context, Options, ex) {
-					Error = ex
+				var nojoy = new BasicAuthenticationEventContext(principal, properties, Context, Scheme, Options) {
+					Exception = ex
 				};
-				await Options.Events.AuthenticationFailed(failedCtx);
-				if (failedCtx.HandledResponse)
-					return AuthenticateResult.Success(failedCtx.Ticket);
-				if (failedCtx.Skipped)
-					return AuthenticateResult.Fail(ex);
-
+				await Options.Events.AuthenticationFailed(nojoy);
+				if (nojoy.Result.Succeeded)
+					return AuthenticateResult.Success(nojoy.Result.Ticket);
 				return AuthenticateResult.Fail(ex);
 			}
-		}
-
-		protected override async Task<bool> HandleUnauthorizedAsync(ChallengeContext context) {
-			switch (context.Behavior) {
-				case ChallengeBehavior.Forbidden:
-					Response.StatusCode = (int)HttpStatusCode.Forbidden;
-					return false;
-				case ChallengeBehavior.Automatic:
-				case ChallengeBehavior.Unauthorized:
-				default:
-					await SetAuthenticateHeader();
-					return false;
-			}
-		}
-
-		private async Task SetAuthenticateHeader() {
-			Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-			var challengeCtx = new BasicChallengeContext(Context, Options);
-			var challengeValue = string.Format(BasicAuthentication.ChallengeFormat, Options.Realm);
-			Response.Headers.AppendCommaSeparatedValues(
-				key: BasicAuthentication.WwwAuthenticateHeader,
-				values: new[] { challengeValue });
-			await Options.Events.Challenge(challengeCtx);
-			Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-		}
-
-		protected override Task HandleSignOutAsync(SignOutContext context) {
-			throw new NotSupportedException();
-		}
-
-		protected override Task HandleSignInAsync(SignInContext context) {
-			throw new NotSupportedException();
 		}
 	}
 }
