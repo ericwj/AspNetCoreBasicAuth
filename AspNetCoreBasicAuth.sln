@@ -22,10 +22,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F4BBF41B
 	ProjectSection(SolutionItems) = preProject
 		build\AssemblyInfo.props = build\AssemblyInfo.props
 		build\AssemblyInfo.targets = build\AssemblyInfo.targets
+		build\build.ps1 = build\build.ps1
 		build\Default.props = build\Default.props
 		build\Version.props = build\Version.props
 		build\Version.targets = build\Version.targets
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D9EA5698-26B8-4BC7-A2D7-C51C002091BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicAuthentication", "samples\BasicAuthentication\BasicAuthentication.csproj", "{26526FAA-810A-4AD1-8346-C02DC71596C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,12 +54,25 @@ Global
 		{06AD266F-AA4F-4370-9304-C6ABA5C47ACF}.Release|x64.Build.0 = Release|Any CPU
 		{06AD266F-AA4F-4370-9304-C6ABA5C47ACF}.Release|x86.ActiveCfg = Release|Any CPU
 		{06AD266F-AA4F-4370-9304-C6ABA5C47ACF}.Release|x86.Build.0 = Release|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Debug|x64.Build.0 = Debug|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Debug|x86.Build.0 = Debug|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Release|x64.ActiveCfg = Release|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Release|x64.Build.0 = Release|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Release|x86.ActiveCfg = Release|Any CPU
+		{26526FAA-810A-4AD1-8346-C02DC71596C0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AD266F-AA4F-4370-9304-C6ABA5C47ACF} = {CEAC5E0E-4B06-4C21-A2F9-32A686B3672C}
+		{26526FAA-810A-4AD1-8346-C02DC71596C0} = {D9EA5698-26B8-4BC7-A2D7-C51C002091BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE94F385-8FE9-49E4-A648-47A41A73B439}
