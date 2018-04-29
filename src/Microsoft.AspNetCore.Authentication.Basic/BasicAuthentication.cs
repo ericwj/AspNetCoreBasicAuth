@@ -64,8 +64,10 @@ namespace Microsoft.AspNetCore.Authentication.Basic
 				credential.Username,
 				ClaimValueTypes.String,
 				issuer);
-			var identity = new ClaimsIdentity(new[] { id, name }, authenticationScheme);
-			return new ClaimsPrincipal(new[] { identity });
+			var identity = new ClaimsIdentity(authenticationScheme);
+            identity.AddClaim(id);
+            identity.AddClaim(name);
+			return new ClaimsPrincipal(identity);
 		}
 	}
 }
