@@ -47,14 +47,14 @@ namespace Microsoft.AspNetCore.Authentication.Basic
             }
         }
         /// <summary>Attempts to parse a <see cref="BasicAuthenticationCredential"/> from the provided string values and returns the first valid one found.</summary>
-        public static bool TryParseHeaderCredentials(this IEnumerable<string> values, out BasicAuthenticationCredential credential, out Exception firstError)
+        public static bool TryParseHeaderCredentials(this IEnumerable<string> values, bool allowEmptyUsername, bool allowEmptyPassword, out BasicAuthenticationCredential credential, out Exception firstError)
         {
             credential = null;
             Exception error = null;
             firstError = null;
             foreach (var value in values)
             {
-                if (BasicAuthenticationCredential.TryParse(value, out credential, out error))
+                if (BasicAuthenticationCredential.TryParse(value, allowEmptyUsername, allowEmptyPassword, out credential, out error))
                 {
                     firstError = null;
                     return true;

@@ -57,7 +57,7 @@ namespace Microsoft.AspNetCore.Authentication.Basic
         {
             Response.StatusCode = (int)HttpStatusCode.Forbidden;
             var context = new BasicAuthenticationEventContext(null, properties, Context, Scheme, Options);
-			return Events.Forbid(context);
+            return Events.Forbid(context);
         }
 
         /// <summary>The authentication handler method.</summary>
@@ -74,7 +74,11 @@ namespace Microsoft.AspNetCore.Authentication.Basic
                         return AuthenticateResult.Fail("No authorization header.");
                     if (!valid.Any())
                         return AuthenticateResult.Fail("No authorization header.");
-                    if (!valid.TryParseHeaderCredentials(out credential, out var firstError))
+                    if (!valid.TryParseHeaderCredentials(
+                        Options.AllowEmptyUsername,
+                        Options.AllowEmptyPassword,
+                        out credential,
+                        out var firstError))
                         return AuthenticateResult.Fail(firstError);
                 }
                 principal = BasicAuthentication.CreateClaimsPrincipal(

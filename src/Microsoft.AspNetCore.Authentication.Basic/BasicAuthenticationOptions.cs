@@ -24,15 +24,20 @@ namespace Microsoft.AspNetCore.Authentication.Basic
         /// when they are challenged for a username and password.</summary>
         public string Realm { get; set; } = BasicAuthenticationDefaults.Realm;
 
+        /// <summary>Indicates whether null, empty or whitespace-only usernames are allowed.</summary>
+        public bool AllowEmptyUsername { get; set; }
+        /// <summary>Indicates whether null, empty or whitespace-only passwords are allowed.</summary>
+        public bool AllowEmptyPassword { get; set; }
+        
         /// <summary>Validates these options. The default implementation requires
         /// <see cref="Realm"/> to be set and not be whitespace only.</summary>
         public override void Validate()
         {
             if (string.IsNullOrWhiteSpace(Realm))
                 throw new ArgumentException(
-					$"The option setting '{nameof(Realm)}' with value '{Realm}' is invalid. " +
-					"A value is required and cannot be whitespace only.",
-					nameof(Realm));
+                    $"The option setting '{nameof(Realm)}' with value '{Realm}' is invalid. " +
+                    "A value is required and cannot be whitespace only.",
+                    nameof(Realm));
 
             base.Validate();
         }
