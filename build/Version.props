@@ -1,6 +1,6 @@
 ﻿<Project ToolsVersion="15.0">
 	<PropertyGroup>
-		<VersionPrefix>2.1.0</VersionPrefix>
+		<VersionPrefix>2.0.0</VersionPrefix>
 		<VersionSuffix>dev</VersionSuffix>
 
 		<Agent_Name Condition="'$(Agent_Name)'==''">$(ComputerName)</Agent_Name>
