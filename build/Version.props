@@ -1,12 +1,13 @@
 ﻿<Project ToolsVersion="15.0">
 	<PropertyGroup>
 		<VersionPrefix>2.1.0</VersionPrefix>
-		<VersionSuffix>alpha</VersionSuffix>
+		<VersionSuffix>dev</VersionSuffix>
 
 		<Agent_Name Condition="'$(Agent_Name)'==''">$(ComputerName)</Agent_Name>
 		<Build_DefinitionName Condition="'$(Build_DefinitionName)' == ''">Dev</Build_DefinitionName>
 		<Build_BuildId Condition="'$(Build_BuildId)' == ''">0</Build_BuildId>
 		<Build_QueuedBy Condition="'$(Build_QueuedBy)' == ''">$(UserName)</Build_QueuedBy>
+		<VersionSuffix Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$VersionSuffix', '[^-]+'))">$(VersionSuffix)-$([System.DateTime]::Now.ToString(`yyMMdd-HHmm`))</VersionSuffix>
 		<VersionSuffix Condition="'$(NoVersionSuffix)' == 'true'"></VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).$(Build_BuildId)</AssemblyVersion>
 	</PropertyGroup>
