@@ -1,6 +1,7 @@
 // Copyright (c) 2017-2018 Eric. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 using Microsoft.AspNetCore.Authentication.Basic.Events;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -48,7 +49,19 @@ namespace Microsoft.AspNetCore.Authentication.Basic
 
         /// <summary>Handle <see cref="IAuthenticationService.ChallengeAsync(Http.HttpContext, string, AuthenticationProperties)"/> by calling <see cref="SetAuthenticateHeader(AuthenticationProperties)"/>.</summary>
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
-            => SetAuthenticateHeader(properties);
+        {
+            if (!Options.AllowChallengeOverInsecureTransport && Context.Request.Scheme != "https")
+            {
+                Context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                Context.Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase
+                    = Options.InsecureChallengeDeniedReasonPhrase;
+                return Task.CompletedTask;
+            }
+            else
+            {
+                return SetAuthenticateHeader(properties);
+            }
+        }
 
         /// <summary>Handle <see cref="IAuthenticationService.ForbidAsync(Http.HttpContext, string, AuthenticationProperties)"/> by 
         /// setting the response status code to <see cref="HttpStatusCode.Forbidden"/> and calling
