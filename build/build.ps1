@@ -19,10 +19,10 @@ Param(
 	[string]$Verbosity,
 
 	[Parameter(Mandatory = $false)]
-	[string]$PublishToFeed = "C:\Users\Eric\Source\NuGet\Default",
+	[string]$PublishToFeed = "$env:HOMEDRIVE$env:HOMEPATH\Source\NuGet\Default",
 
 	[Parameter(Mandatory = $false)]
-	[string]$PublishSymbolsToFeed = "C:\Users\Eric\Source\NuGet\Symbols"
+	[string]$PublishSymbolsToFeed = "$env:HOMEDRIVE$env:HOMEPATH\Source\NuGet\Symbols"
 )
 
 $Args = @('pack')
@@ -43,6 +43,12 @@ if ($IncludeSource.IsPresent) {
 }
 if (![string]::IsNullOrEmpty($Verbosity)) {
 	$Args += @('--verbosity', $Verbosity)
+}
+if (![string]::IsNullOrEmpty($PublishToFeed) -and [uri]::new($PublishToFeed).IsFile -and ![System.IO.Directory]::Exists($PublishToFeed)) {
+	throw [System.IO.DirectoryNotFoundException]::new("The feed directory '$PublishToFeed' does not exist.")
+}
+if (![string]::IsNullOrEmpty($PublishSymbolsToFeed) -and [uri]::new($PublishSymbolsToFeed).IsFile -and ![System.IO.Directory]::Exists($PublishSymbolsToFeed)) {
+	throw [System.IO.DirectoryNotFoundException]::new("The symbol feed directory '$PublishSymbolsToFeed' does not exist.")
 }
 
 $Started = [datetime]::Now
