@@ -26,14 +26,16 @@ namespace Microsoft.AspNetCore.Authentication.Basic
 				select header;
         }
 		public static bool TryGetAuthorizationHeaderValues(this IHeaderDictionary headers, out IEnumerable<string> values) {
-			StringValues stringValues;
-			if (headers.TryGetValue(AuthorizationHeader, out stringValues)) {
-				values = GetWwwAuthenticateHeaderValues(stringValues);
-				return true;
-			} else {
-				values = null;
-				return false;
-			}
+            if (headers.TryGetValue(AuthorizationHeader, out var stringValues))
+            {
+                values = GetWwwAuthenticateHeaderValues(stringValues);
+                return true;
+            }
+            else
+            {
+                values = null;
+                return false;
+            }
         }
 
 		public static bool TryParseHeaderCredentials(this IEnumerable<string> values, out BasicAuthenticationCredential credential, out Exception firstError) {
