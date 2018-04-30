@@ -44,21 +44,22 @@ if ($IncludeSource.IsPresent) {
 if (![string]::IsNullOrEmpty($Verbosity)) {
 	$Args += @('--verbosity', $Verbosity)
 }
-$NuPkg = dir -Filter *.nupkg -Recurse -ErrorAction SilentlyContinue
-$NuPkgDefault = $NuPkg | where BaseName -NotMatch "\.symbols\.nupkg$" | foreach { $_.FullName }
-$NuPkgSymbols = $NuPkg | where BaseName -Match "\.symbols\.nupkg$" | foreach { $_.FullName }
 
+$Started = [datetime]::Now
 $Command = (@('dotnet') + $Args) -join " "
 if ($PSCmdlet.ShouldProcess($Command, "Execute")) {
 	& 'dotnet' $Args
 }
 
-$NewPkg = dir -Filter *.nupkg -Recurse -ErrorAction SilentlyContinue
-$NewPkgDefault = $NuPkg | where BaseName -NotMatch "\.symbols\.nupkg$" | foreach { $_.FullName }
-$NewPkgSymbols = $NuPkg | where BaseName -Match "\.symbols\.nupkg$" | foreach { $_.FullName }
-$NewPkgDefault = $NewPkgDefault | where { $NuPkgDefault -notcontains $_ }
-$NewPkgSymbols = $NewPkgSymbols | where { $NuPkgSymbols -notcontains $_ }
-
+$NewPkg = dir -Filter *.nupkg -Recurse -ErrorAction SilentlyContinue | where LastWriteTime -GT $Started
+$NewPkgDefault = $NewPkg | where Name -NotMatch "\.symbols\.nupkg$" | foreach { $_.FullName }
+$NewPkgSymbols = $NewPkg | where Name -Match "\.symbols\.nupkg$" | foreach { $_.FullName }
+foreach ($NewPackage in $NewPkgDefault) {
+	Write-Verbose "New package built: $Existing"
+}
+foreach ($NewPackage in $NewPkgSymbols) {
+	Write-Verbose "New symbols package built: $Existing"
+}
 if (![string]::IsNullOrEmpty($PublishToFeed)) {
 	$NewPkgDefault | foreach {
 		$Args = @('push', $_, '-Source', $PublishToFeed)
