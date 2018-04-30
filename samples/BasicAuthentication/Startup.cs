@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Basic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +10,8 @@ namespace BasicAuthentication
 {
     public class Startup
     {
+        public const string RequireBasicAuthPolicy = nameof(RequireBasicAuthPolicy);
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -37,10 +35,10 @@ namespace BasicAuthentication
             services
                 .AddAuthorization(options =>
                 {
-                    options.AddPolicy("PlainTextPassword", builder =>
+                    options.AddPolicy(RequireBasicAuthPolicy, builder =>
                     {
                         builder
-                            .AddAuthenticationSchemes("Basic")
+                            .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
                             .RequireAuthenticatedUser();
                     });
                 });

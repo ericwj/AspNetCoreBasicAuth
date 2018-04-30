@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BasicAuthentication.Pages
 {
-	[Authorize(Policy = "PlainTextPassword")]
+	[Authorize(Policy = Startup.RequireBasicAuthPolicy)]
     public class SecretModel : PageModel
     {
         public void OnGet()
