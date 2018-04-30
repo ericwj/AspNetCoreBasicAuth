@@ -6,32 +6,26 @@ using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.AspNetCore.Authentication.Basic.Events
 {
+    /// <summary>Defines the interface required for implementors to completely override all
+    /// basic authentication events.</summary>
     public interface IBasicAuthenticationEvents
     {
-		/// <summary>
-		/// Occurs when a (fatal) failure occurs processing the basic authentication pipeline.
-		/// </summary>
-		/// <param name="context">The context for the current request.</param>
-		/// <returns>A task.</returns>
-		Task AuthenticationFailed(BasicAuthenticationEventContext context);
-		/// <summary>
-		/// Provides the handler of the event a chance to replace the basic authentication credentials
-		/// and to obtain them from another source than the standard Authorization header.
-		/// </summary>
-		/// <param name="context">The <see cref="CredentialReceivingContext"/> carries the context
-		/// for the current request. Its <see cref="CredentialReceivingContext.Credential"/> is null
-		/// upon receiving this event. These credentials may be set by this event, in which case
-		/// the normal parsing of the Authorization header does not take place.
-		/// </param>
-		/// <returns>A task.</returns>
-		Task CredentialReceiving(BasicAuthenticationEventContext context);
-		/// <summary>Occurs after the basic authentication credentials are obtained.</summary>
-		/// <param name="context">The context for the current request.</param>
-		/// <returns>A task.</returns>
-		Task CredentialReceived(BasicAuthenticationEventContext context);
-		/// <summary>Occurs when an authentication challenge is requested by the application.</summary>
-		/// <param name="context">The context for the current request.</param>
-		/// <returns>A task.</returns>
-		Task Challenge(BasicAuthenticationEventContext context);
+        /// <summary>
+        /// Occurs when a (fatal) failure occurs processing the basic authentication pipeline.
+        /// </summary>
+        /// <param name="context">The context for the current request.</param>
+        /// <returns>A task.</returns>
+        Task AuthenticationFailed(BasicAuthenticationEventContext context);
+        /// <summary>Occurs after the basic authentication credentials are obtained.</summary>
+        /// <param name="context">The context for the current request.</param>
+        /// <returns>A task.</returns>
+        Task CredentialReceived(BasicAuthenticationEventContext context);
+        /// <summary>Occurs when an authentication challenge is requested by the application.</summary>
+        /// <param name="context">The context for the current request.</param>
+        /// <returns>A task.</returns>
+        Task Challenge(BasicAuthenticationEventContext context);
+        /// <summary>Occurs when <see cref="IAuthenticationService.ForbidAsync(HttpContext, string, AuthenticationProperties)"/>
+        /// is requested by the application.</summary>
+        Task Forbid(BasicAuthenticationEventContext context);
     }
 }

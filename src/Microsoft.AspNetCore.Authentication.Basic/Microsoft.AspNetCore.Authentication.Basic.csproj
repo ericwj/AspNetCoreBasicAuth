@@ -1,11 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Microsoft.AspNet.Security.Basic Class Library</Description>
+    <Description>Basic Authentication for ASP.NET Core.</Description>
     <Authors>Eric</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Microsoft.AspNetCore.Authentication.Basic</AssemblyName>
     <PackageId>Microsoft.AspNetCore.Authentication.Basic</PackageId>
+    <Copyright>Copyright © 2017-2018 Eric</Copyright>
+    <RepositoryUrl>https://github.com/ericwj/AspNetCoreBasicAuth.git</RepositoryUrl>
+    <PackageTags>ASP.NET Core Basic Authentication Authorization</PackageTags>
+    <PackageProjectUrl>https://github.com/ericwj/AspNetCoreBasicAuth</PackageProjectUrl>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Microsoft.AspNetCore.Authentication.Basic.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

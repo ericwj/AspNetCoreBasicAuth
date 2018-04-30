@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.Basic
 {
+    /// <summary>The authentication handler that handles incoming Basic Authentication headers.</summary>
     public class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthenticationOptions>
     {
-
+        /// <summary>Creates an authentication handler that handles incoming Basic Authentication headers.</summary>
         public BasicAuthenticationHandler(
             IOptionsMonitor<BasicAuthenticationOptions> monitor,
             ILoggerFactory logger,
@@ -20,31 +21,44 @@ namespace Microsoft.AspNetCore.Authentication.Basic
             ISystemClock clock)
             : base(monitor, logger, encoder, clock) { }
 
+        /// <summary>Gets or sets the events that can be used to customize incoming
+        /// basic authentication requests or outgoing challenges.</summary>
         protected new IBasicAuthenticationEvents Events {
             get => (IBasicAuthenticationEvents)base.Events;
             set => base.Events = value;
         }
 
-        private async Task SetAuthenticateHeader(AuthenticationProperties properties)
+        /// <summary>Sets the outgoing header value of the <see cref="BasicAuthentication.WwwAuthenticateHeader"/> header,
+        /// sets the response status code to <see cref="HttpStatusCode.Unauthorized"/>
+        /// and calls <see cref="IBasicAuthenticationEvents.Challenge(BasicAuthenticationEventContext)"/>.</summary>
+        protected async Task SetAuthenticateHeader(AuthenticationProperties properties)
         {
             var challenge = string.Format(BasicAuthentication.ChallengeFormat, Options.Realm);
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             Response.Headers.Add(BasicAuthentication.WwwAuthenticateHeader, challenge);
             var context = new BasicAuthenticationEventContext(null, properties, Context, Scheme, Options);
-            await Options.Events.Challenge(context);
+            await Events.Challenge(context);
         }
 
+        /// <summary>Creates the default <see cref="IBasicAuthenticationEvents"/>
+        /// as a <see cref="BasicAuthenticationEvents"/> instance.</summary>
         protected override Task<object> CreateEventsAsync() => Task.FromResult<object>(new BasicAuthenticationEvents());
 
+        /// <summary>Handle <see cref="IAuthenticationService.ChallengeAsync(Http.HttpContext, string, AuthenticationProperties)"/> by calling <see cref="SetAuthenticateHeader(AuthenticationProperties)"/>.</summary>
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
             => SetAuthenticateHeader(properties);
 
+        /// <summary>Handle <see cref="IAuthenticationService.ForbidAsync(Http.HttpContext, string, AuthenticationProperties)"/> by 
+        /// setting the response status code to <see cref="HttpStatusCode.Forbidden"/> and calling
+        /// <see cref="IBasicAuthenticationEvents.Forbid(BasicAuthenticationEventContext)"/></summary>
         protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
         {
             Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return Task.CompletedTask;
+            var context = new BasicAuthenticationEventContext(null, properties, Context, Scheme, Options);
+			return Events.Forbid(context);
         }
 
+        /// <summary>The authentication handler method.</summary>
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             ClaimsPrincipal principal = null;

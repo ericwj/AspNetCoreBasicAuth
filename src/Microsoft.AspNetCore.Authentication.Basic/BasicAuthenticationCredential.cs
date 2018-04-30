@@ -4,12 +4,17 @@ using System.Runtime.ExceptionServices;
 using System.Text;
 
 namespace Microsoft.AspNetCore.Authentication.Basic {
-	public class BasicAuthenticationCredential {
-		public string Username { get; set; }
-		public string Password { get; set; }
-		public string Header { get; set; }
+    /// <summary>Represents a Basic Authentication credential.</summary>
+    public class BasicAuthenticationCredential {
+        /// <summary>The user name.</summary>
+        public string Username { get; set; }
+        /// <summary>The password.</summary>
+        public string Password { get; set; }
+        /// <summary>The original header value.</summary>
+        public string Header { get; set; }
 
-		public static bool TryParse(string header, out BasicAuthenticationCredential credential, out Exception error) {
+        /// <summary>Attempts to parse the specified string as a Basic Authentication credential.</summary>
+        public static bool TryParse(string header, out BasicAuthenticationCredential credential, out Exception error) {
 			try {
 				credential = Parse(header);
 				error = null;
@@ -20,7 +25,8 @@ namespace Microsoft.AspNetCore.Authentication.Basic {
 				return false;
 			}
 		}
-		public static BasicAuthenticationCredential Parse(string header) {
+        /// <summary>Parses the specified string as a Basic Authentication credential and throws if parsing fails.</summary>
+        public static BasicAuthenticationCredential Parse(string header) {
 			if (header == null) throw new ArgumentNullException(nameof(header));
 			if (string.IsNullOrEmpty(header)) throw new ArgumentException(nameof(header));
 
