@@ -1,4 +1,6 @@
-﻿namespace Microsoft.AspNetCore.Authentication.Basic
+// Copyright (c) 2017-2018 Eric. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+namespace Microsoft.AspNetCore.Authentication.Basic
 {
     /// <summary>Defaults for the Basic Authentication scheme.</summary>
     public class BasicAuthenticationDefaults
